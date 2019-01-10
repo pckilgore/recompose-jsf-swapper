@@ -1,7 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./styles.css";
-import { compose, withState, withProps, branch } from "recompose";
+import {
+  compose,
+  withState,
+  withProps,
+  branch,
+  onlyUpdateForKeys,
+  shouldUpdate
+} from "recompose";
 
 /*
   withState("formType", "setFormType"),
@@ -11,14 +18,13 @@ import { compose, withState, withProps, branch } from "recompose";
   branch(({ formType }) => formType === "4", withProps({ formData: "4" }))
 */
 
-const withHOCSwitch = (state, updater, initial, ...branches) => {
-  return compose(
+export const withHOCSwitch = (state, updater, initial, ...branches) =>
+  compose(
     withState(state, updater, initial),
     ...branches.map(({ match, to }) =>
-      branch(({ state: test }) => test === match, to)
+      branch(props => props[state] === match, to)
     )
   );
-};
 
 const App = compose(
   withHOCSwitch(
